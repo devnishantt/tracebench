@@ -10,3 +10,6 @@ def test_retain_decimal_precision_beyond_binary_float_representation(dataset_fac
 def test_reject_fractional_and_scientific_integer_values(dataset_factory,tmp_path):
     assert not accepts('1.5','integer')
     assert not accepts('1e3','integer')
+
+def test_reject_nonfinite_numeric_spellings(dataset_factory,tmp_path):
+    for value in ['NaN','Infinity','-inf']: assert not accepts(value,'number')

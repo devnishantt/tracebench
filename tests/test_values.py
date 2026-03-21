@@ -13,3 +13,7 @@ def test_reject_fractional_and_scientific_integer_values(dataset_factory,tmp_pat
 
 def test_reject_nonfinite_numeric_spellings(dataset_factory,tmp_path):
     for value in ['NaN','Infinity','-inf']: assert not accepts(value,'number')
+
+def test_require_explicit_datetime_timezones(dataset_factory,tmp_path):
+    assert not accepts('2026-10-01T12:00:00','datetime')
+    assert accepts('2026-10-01T12:00:00Z','datetime')

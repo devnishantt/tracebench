@@ -20,3 +20,7 @@ def test_require_explicit_datetime_timezones(dataset_factory,tmp_path):
 
 def test_normalize_equivalent_timezone_offsets(dataset_factory,tmp_path):
     assert parse_value('2026-10-01T13:00:00+01:00','datetime') == parse_value('2026-10-01T12:00:00Z','datetime')
+
+def test_require_canonical_uuid_punctuation(dataset_factory,tmp_path):
+    assert accepts('00000000-0000-4000-8000-000000000001','uuid')
+    assert not accepts('00000000000040008000000000000001','uuid')

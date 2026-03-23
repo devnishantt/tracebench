@@ -17,3 +17,6 @@ def test_reject_nonfinite_numeric_spellings(dataset_factory,tmp_path):
 def test_require_explicit_datetime_timezones(dataset_factory,tmp_path):
     assert not accepts('2026-10-01T12:00:00','datetime')
     assert accepts('2026-10-01T12:00:00Z','datetime')
+
+def test_normalize_equivalent_timezone_offsets(dataset_factory,tmp_path):
+    assert parse_value('2026-10-01T13:00:00+01:00','datetime') == parse_value('2026-10-01T12:00:00Z','datetime')

@@ -24,3 +24,8 @@ def test_normalize_equivalent_timezone_offsets(dataset_factory,tmp_path):
 def test_require_canonical_uuid_punctuation(dataset_factory,tmp_path):
     assert accepts('00000000-0000-4000-8000-000000000001','uuid')
     assert not accepts('00000000000040008000000000000001','uuid')
+
+def test_apply_a_deliberately_simple_email_shape_check(dataset_factory,tmp_path):
+    assert accepts('person@example.test','email')
+    assert not accepts('person@@example.test','email')
+    assert not accepts('a b@example.test','email')

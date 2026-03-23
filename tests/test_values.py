@@ -29,3 +29,6 @@ def test_apply_a_deliberately_simple_email_shape_check(dataset_factory,tmp_path)
     assert accepts('person@example.test','email')
     assert not accepts('person@@example.test','email')
     assert not accepts('a b@example.test','email')
+
+def test_preserve_string_whitespace_rather_than_silently_cleaning_values(dataset_factory,tmp_path):
+    assert parse_value('  original  ','string') == '  original  '

@@ -32,3 +32,7 @@ def test_apply_a_deliberately_simple_email_shape_check(dataset_factory,tmp_path)
 
 def test_preserve_string_whitespace_rather_than_silently_cleaning_values(dataset_factory,tmp_path):
     assert parse_value('  original  ','string') == '  original  '
+
+def test_reject_numeric_magnitudes_outside_finite_profiling_range(dataset_factory,tmp_path):
+    assert not accepts('1e309','number')
+    assert not accepts('1e-309','number')

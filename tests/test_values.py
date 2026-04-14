@@ -36,3 +36,7 @@ def test_preserve_string_whitespace_rather_than_silently_cleaning_values(dataset
 def test_reject_numeric_magnitudes_outside_finite_profiling_range(dataset_factory,tmp_path):
     assert not accepts('1e309','number')
     assert not accepts('1e-309','number')
+
+def test_bound_the_length_of_integer_and_number_inputs(dataset_factory,tmp_path):
+    assert not accepts('1'*129,'integer')
+    assert not accepts('1'*129,'number')

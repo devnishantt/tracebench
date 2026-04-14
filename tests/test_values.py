@@ -40,3 +40,8 @@ def test_reject_numeric_magnitudes_outside_finite_profiling_range(dataset_factor
 def test_bound_the_length_of_integer_and_number_inputs(dataset_factory,tmp_path):
     assert not accepts('1'*129,'integer')
     assert not accepts('1'*129,'number')
+
+def test_accept_only_the_documented_boolean_spellings(dataset_factory,tmp_path):
+    assert parse_value(' TRUE ','boolean') is True
+    assert parse_value('0','boolean') is False
+    assert not accepts('yes','boolean')

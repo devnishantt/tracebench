@@ -45,3 +45,7 @@ def test_accept_only_the_documented_boolean_spellings(dataset_factory,tmp_path):
     assert parse_value(' TRUE ','boolean') is True
     assert parse_value('0','boolean') is False
     assert not accepts('yes','boolean')
+
+def test_reject_non_ascii_numeric_glyphs(dataset_factory,tmp_path):
+    assert not accepts('١٢','integer')
+    assert not accepts('１２','number')

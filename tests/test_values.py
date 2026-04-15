@@ -57,3 +57,7 @@ def test_reject_impossible_calendar_days(dataset_factory,tmp_path):
 def test_require_padded_iso_calendar_dates(dataset_factory,tmp_path):
     assert not accepts('2026-1-1','date')
     assert not accepts('01/01/2026','date')
+
+def test_quote_embedded_double_quotes_in_sql_identifiers(dataset_factory,tmp_path):
+    assert identifier('odd"name') == '"odd""name"'
+    with pytest.raises(InputError): identifier('bad\x00name')

@@ -49,3 +49,7 @@ def test_accept_only_the_documented_boolean_spellings(dataset_factory,tmp_path):
 def test_reject_non_ascii_numeric_glyphs(dataset_factory,tmp_path):
     assert not accepts('١٢','integer')
     assert not accepts('１２','number')
+
+def test_reject_impossible_calendar_days(dataset_factory,tmp_path):
+    assert not accepts('2026-02-29','date')
+    assert accepts('2024-02-29','date')

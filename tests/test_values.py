@@ -53,3 +53,7 @@ def test_reject_non_ascii_numeric_glyphs(dataset_factory,tmp_path):
 def test_reject_impossible_calendar_days(dataset_factory,tmp_path):
     assert not accepts('2026-02-29','date')
     assert accepts('2024-02-29','date')
+
+def test_require_padded_iso_calendar_dates(dataset_factory,tmp_path):
+    assert not accepts('2026-1-1','date')
+    assert not accepts('01/01/2026','date')

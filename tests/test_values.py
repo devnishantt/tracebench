@@ -61,3 +61,7 @@ def test_require_padded_iso_calendar_dates(dataset_factory,tmp_path):
 def test_quote_embedded_double_quotes_in_sql_identifiers(dataset_factory,tmp_path):
     assert identifier('odd"name') == '"odd""name"'
     with pytest.raises(InputError): identifier('bad\x00name')
+
+def test_reject_invalid_parameter_placeholder_shapes(dataset_factory,tmp_path):
+    assert placeholders(2) == '?,?'
+    with pytest.raises(InputError): placeholders(0)

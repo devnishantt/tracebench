@@ -14,3 +14,6 @@ def test_read_crlf_records_and_utf8_bom_headers(dataset_factory,tmp_path):
 def test_preserve_line_breaks_inside_quoted_cells(dataset_factory,tmp_path):
     data=dataset_factory('id,note\n1,"line one\nline two"\n')
     assert data.values('note')[0][1] == 'line one\nline two'
+
+def test_reject_ragged_csv_records(dataset_factory,tmp_path):
+    with pytest.raises(InputError,match='column count'): dataset_factory('id,value\n1,2,3\n')

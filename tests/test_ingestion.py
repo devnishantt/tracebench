@@ -17,3 +17,6 @@ def test_preserve_line_breaks_inside_quoted_cells(dataset_factory,tmp_path):
 
 def test_reject_ragged_csv_records(dataset_factory,tmp_path):
     with pytest.raises(InputError,match='column count'): dataset_factory('id,value\n1,2,3\n')
+
+def test_reject_duplicate_normalized_headers(dataset_factory,tmp_path):
+    with pytest.raises(InputError,match='Duplicate'): dataset_factory('id, id \n1,2\n')

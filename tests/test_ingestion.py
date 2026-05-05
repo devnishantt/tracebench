@@ -20,3 +20,6 @@ def test_reject_ragged_csv_records(dataset_factory,tmp_path):
 
 def test_reject_duplicate_normalized_headers(dataset_factory,tmp_path):
     with pytest.raises(InputError,match='Duplicate'): dataset_factory('id, id \n1,2\n')
+
+def test_reject_case_colliding_duckdb_column_names(dataset_factory,tmp_path):
+    with pytest.raises(InputError,match='case-colliding'): dataset_factory('ID,id\n1,2\n')

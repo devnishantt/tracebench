@@ -23,3 +23,6 @@ def test_reject_duplicate_normalized_headers(dataset_factory,tmp_path):
 
 def test_reject_case_colliding_duckdb_column_names(dataset_factory,tmp_path):
     with pytest.raises(InputError,match='case-colliding'): dataset_factory('ID,id\n1,2\n')
+
+def test_reserve_the_internal_record_number_column(dataset_factory,tmp_path):
+    with pytest.raises(InputError,match='reserved'): dataset_factory('__tb_row,value\n1,2\n')

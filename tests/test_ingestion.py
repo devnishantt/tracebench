@@ -35,3 +35,6 @@ def test_enforce_source_row_limits(dataset_factory,tmp_path):
 
 def test_enforce_the_total_cell_budget(dataset_factory,tmp_path):
     with pytest.raises(InputError,match='cell budget'): dataset_factory('a,b\n1,2\n3,4\n',limits=Limits(max_cells=3))
+
+def test_enforce_per_cell_length_budgets(dataset_factory,tmp_path):
+    with pytest.raises(InputError,match='cell'): dataset_factory('value\nabcdef\n',limits=Limits(max_cell_length=3))

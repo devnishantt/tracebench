@@ -29,3 +29,6 @@ def test_reserve_the_internal_record_number_column(dataset_factory,tmp_path):
 
 def test_enforce_source_byte_limits_before_analytical_loading(dataset_factory,tmp_path):
     with pytest.raises(InputError,match='byte budget'): dataset_factory('value\n123456789\n',limits=Limits(max_bytes=5))
+
+def test_enforce_source_row_limits(dataset_factory,tmp_path):
+    with pytest.raises(InputError,match='budget'): dataset_factory('value\n1\n2\n',limits=Limits(max_rows=1))

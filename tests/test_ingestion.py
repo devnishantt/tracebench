@@ -32,3 +32,6 @@ def test_enforce_source_byte_limits_before_analytical_loading(dataset_factory,tm
 
 def test_enforce_source_row_limits(dataset_factory,tmp_path):
     with pytest.raises(InputError,match='budget'): dataset_factory('value\n1\n2\n',limits=Limits(max_rows=1))
+
+def test_enforce_the_total_cell_budget(dataset_factory,tmp_path):
+    with pytest.raises(InputError,match='cell budget'): dataset_factory('a,b\n1,2\n3,4\n',limits=Limits(max_cells=3))

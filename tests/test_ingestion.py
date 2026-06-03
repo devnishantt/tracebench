@@ -38,3 +38,8 @@ def test_enforce_the_total_cell_budget(dataset_factory,tmp_path):
 
 def test_enforce_per_cell_length_budgets(dataset_factory,tmp_path):
     with pytest.raises(InputError,match='cell'): dataset_factory('value\nabcdef\n',limits=Limits(max_cell_length=3))
+
+def test_union_sparse_jsonl_fields_without_dropping_late_columns(dataset_factory,tmp_path):
+    data=dataset_factory('{"id":1}\n{"id":2,"name":"late"}\n',filename='sparse.jsonl')
+    assert data.source.columns == ['id','name']
+    assert data.values('name') == [(1,None),(2,'late')]

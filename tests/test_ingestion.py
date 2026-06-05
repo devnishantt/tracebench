@@ -43,3 +43,6 @@ def test_union_sparse_jsonl_fields_without_dropping_late_columns(dataset_factory
     data=dataset_factory('{"id":1}\n{"id":2,"name":"late"}\n',filename='sparse.jsonl')
     assert data.source.columns == ['id','name']
     assert data.values('name') == [(1,None),(2,'late')]
+
+def test_reject_duplicate_jsonl_object_keys(dataset_factory,tmp_path):
+    with pytest.raises(InputError,match='duplicate'): dataset_factory('{"id":1,"id":2}\n',filename='duplicate.jsonl')

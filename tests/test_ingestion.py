@@ -46,3 +46,6 @@ def test_union_sparse_jsonl_fields_without_dropping_late_columns(dataset_factory
 
 def test_reject_duplicate_jsonl_object_keys(dataset_factory,tmp_path):
     with pytest.raises(InputError,match='duplicate'): dataset_factory('{"id":1,"id":2}\n',filename='duplicate.jsonl')
+
+def test_reject_nonfinite_json_extensions(dataset_factory,tmp_path):
+    with pytest.raises(InputError,match='finite'): dataset_factory('{"amount":NaN}\n',filename='nan.jsonl')

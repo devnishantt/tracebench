@@ -49,3 +49,6 @@ def test_reject_duplicate_jsonl_object_keys(dataset_factory,tmp_path):
 
 def test_reject_nonfinite_json_extensions(dataset_factory,tmp_path):
     with pytest.raises(InputError,match='finite'): dataset_factory('{"amount":NaN}\n',filename='nan.jsonl')
+
+def test_reject_nested_json_payloads_instead_of_stringifying_silently(dataset_factory,tmp_path):
+    with pytest.raises(InputError,match='scalar'): dataset_factory('{"items":[1,2]}\n',filename='nested.jsonl')

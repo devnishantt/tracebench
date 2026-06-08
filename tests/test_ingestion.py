@@ -52,3 +52,7 @@ def test_reject_nonfinite_json_extensions(dataset_factory,tmp_path):
 
 def test_reject_nested_json_payloads_instead_of_stringifying_silently(dataset_factory,tmp_path):
     with pytest.raises(InputError,match='scalar'): dataset_factory('{"items":[1,2]}\n',filename='nested.jsonl')
+
+def test_respect_custom_null_tokens_exactly(dataset_factory,tmp_path):
+    data=dataset_factory('value\nNA\nnull\n',null_tokens=['NA'])
+    assert data.values('value') == [(1,None),(2,'null')]

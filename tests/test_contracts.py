@@ -7,3 +7,7 @@ from tracebench.errors import ContractError
 
 def test_reject_inverted_numeric_bounds(dataset_factory,tmp_path):
     with pytest.raises(ValidationError): ColumnSpec(name='x',kind='number',minimum=5,maximum=4)
+
+def test_reject_inverted_and_negative_text_lengths(dataset_factory,tmp_path):
+    with pytest.raises(ValidationError): ColumnSpec(name='x',min_length=5,max_length=4)
+    with pytest.raises(ValidationError): ColumnSpec(name='x',min_length=-1)

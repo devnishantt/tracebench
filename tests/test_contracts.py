@@ -14,3 +14,6 @@ def test_reject_inverted_and_negative_text_lengths(dataset_factory,tmp_path):
 
 def test_reject_unknown_column_contract_fields(dataset_factory,tmp_path):
     with pytest.raises(ValidationError): ColumnSpec.model_validate({'name':'x','execute':'DROP TABLE data'})
+
+def test_reject_numeric_bounds_on_text_columns(dataset_factory,tmp_path):
+    with pytest.raises(ValidationError): ColumnSpec(name='x',kind='string',minimum=1)

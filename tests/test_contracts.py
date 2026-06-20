@@ -20,3 +20,6 @@ def test_reject_numeric_bounds_on_text_columns(dataset_factory,tmp_path):
 
 def test_reject_duplicate_declared_column_names(dataset_factory,tmp_path):
     with pytest.raises(ValidationError): DatasetSpec(name='d',columns=[ColumnSpec(name='x'),ColumnSpec(name='x')])
+
+def test_require_primary_keys_to_reference_declared_columns(dataset_factory,tmp_path):
+    with pytest.raises(ValidationError): DatasetSpec(name='d',columns=[ColumnSpec(name='x')],primary_key=['missing'])

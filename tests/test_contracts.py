@@ -26,3 +26,6 @@ def test_require_primary_keys_to_reference_declared_columns(dataset_factory,tmp_
 
 def test_reject_relations_between_incompatible_kinds(dataset_factory,tmp_path):
     with pytest.raises(ValidationError): DatasetSpec(name='d',columns=[ColumnSpec(name='x',kind='date'),ColumnSpec(name='y',kind='number')],relations=[Relation(left='x',op='le',right='y')])
+
+def test_reject_relations_with_missing_fields(dataset_factory,tmp_path):
+    with pytest.raises(ValidationError): DatasetSpec(name='d',columns=[ColumnSpec(name='x')],relations=[Relation(left='x',op='eq',right='missing')])

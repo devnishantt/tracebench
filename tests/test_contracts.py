@@ -38,3 +38,6 @@ def test_fingerprint_equivalent_json_contract_mappings_deterministically(dataset
     b=DatasetSpec.model_validate(json.loads(a.model_dump_json()))
     assert a.fingerprint == b.fingerprint
     assert len(a.fingerprint) == 64
+
+def test_reject_unsupported_contract_schema_versions(dataset_factory,tmp_path):
+    with pytest.raises(ValidationError): DatasetSpec.model_validate({'version':2,'name':'d','columns':[{'name':'x'}]})

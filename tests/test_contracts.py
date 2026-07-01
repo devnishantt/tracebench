@@ -29,3 +29,6 @@ def test_reject_relations_between_incompatible_kinds(dataset_factory,tmp_path):
 
 def test_reject_relations_with_missing_fields(dataset_factory,tmp_path):
     with pytest.raises(ValidationError): DatasetSpec(name='d',columns=[ColumnSpec(name='x')],relations=[Relation(left='x',op='eq',right='missing')])
+
+def test_require_coherent_dataset_row_limits(dataset_factory,tmp_path):
+    with pytest.raises(ValidationError): DatasetSpec(name='d',columns=[ColumnSpec(name='x')],min_rows=5,max_rows=4)

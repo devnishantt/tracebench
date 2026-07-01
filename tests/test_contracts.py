@@ -32,3 +32,9 @@ def test_reject_relations_with_missing_fields(dataset_factory,tmp_path):
 
 def test_require_coherent_dataset_row_limits(dataset_factory,tmp_path):
     with pytest.raises(ValidationError): DatasetSpec(name='d',columns=[ColumnSpec(name='x')],min_rows=5,max_rows=4)
+
+def test_fingerprint_equivalent_json_contract_mappings_deterministically(dataset_factory,tmp_path):
+    a=DatasetSpec(name='d',columns=[ColumnSpec(name='x')])
+    b=DatasetSpec.model_validate(json.loads(a.model_dump_json()))
+    assert a.fingerprint == b.fingerprint
+    assert len(a.fingerprint) == 64

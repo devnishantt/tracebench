@@ -41,3 +41,7 @@ def test_fingerprint_equivalent_json_contract_mappings_deterministically(dataset
 
 def test_reject_unsupported_contract_schema_versions(dataset_factory,tmp_path):
     with pytest.raises(ValidationError): DatasetSpec.model_validate({'version':2,'name':'d','columns':[{'name':'x'}]})
+
+def test_wrap_malformed_contract_files_as_actionable_errors(dataset_factory,tmp_path):
+    path=tmp_path/'broken.json';path.write_text('{bad')
+    with pytest.raises(ContractError): load_contract(path)

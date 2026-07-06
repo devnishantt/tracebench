@@ -21,3 +21,8 @@ def test_report_invalid_types_separately_from_numeric_bounds(dataset_factory,tmp
     r=check(data,DatasetSpec(name='d',columns=[ColumnSpec(name='x',kind='number',minimum=1)]))
     assert next(f for f in r.findings if f.code=='value.type').failures==1
     assert next(f for f in r.findings if f.code=='value.minimum').checked==1
+
+def test_apply_decimal_bounds_without_binary_float_rounding(dataset_factory,tmp_path):
+    data=dataset_factory('x\n0.29\n0.30\n')
+    r=check(data,DatasetSpec(name='d',columns=[ColumnSpec(name='x',kind='number',minimum=Decimal('0.30'))]))
+    assert next(f for f in r.findings if f.code=='value.minimum').sample_rows==[1]

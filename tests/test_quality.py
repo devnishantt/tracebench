@@ -15,3 +15,9 @@ def test_accept_a_null_fraction_exactly_at_its_declared_threshold(dataset_factor
     data=dataset_factory('x\n1\n""\n')
     r=check(data,DatasetSpec(name='d',columns=[ColumnSpec(name='x',nullable=True,max_null_fraction=0.5)]))
     assert r.passed
+
+def test_report_invalid_types_separately_from_numeric_bounds(dataset_factory,tmp_path):
+    data=dataset_factory('x\ninvalid\n5\n')
+    r=check(data,DatasetSpec(name='d',columns=[ColumnSpec(name='x',kind='number',minimum=1)]))
+    assert next(f for f in r.findings if f.code=='value.type').failures==1
+    assert next(f for f in r.findings if f.code=='value.minimum').checked==1

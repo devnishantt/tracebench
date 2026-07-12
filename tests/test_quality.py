@@ -37,3 +37,8 @@ def test_compare_categorical_allowlists_case_sensitively(dataset_factory,tmp_pat
     data=dataset_factory('status\nactive\nACTIVE\n')
     r=check(data,DatasetSpec(name='d',columns=[ColumnSpec(name='status',allowed=['active'])]))
     assert next(f for f in r.findings if f.code=='value.allowed').sample_rows==[2]
+
+def test_require_complete_re2_matches_rather_than_substring_matches(dataset_factory,tmp_path):
+    data=dataset_factory('code\nAB12\nxAB12x\n')
+    r=check(data,DatasetSpec(name='d',columns=[ColumnSpec(name='code',pattern='[A-Z]{2}[0-9]{2}')]))
+    assert next(f for f in r.findings if f.code=='value.pattern').sample_rows==[2]

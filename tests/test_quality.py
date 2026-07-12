@@ -26,3 +26,9 @@ def test_apply_decimal_bounds_without_binary_float_rounding(dataset_factory,tmp_
     data=dataset_factory('x\n0.29\n0.30\n')
     r=check(data,DatasetSpec(name='d',columns=[ColumnSpec(name='x',kind='number',minimum=Decimal('0.30'))]))
     assert next(f for f in r.findings if f.code=='value.minimum').sample_rows==[1]
+
+def test_enforce_maximum_numeric_and_unicode_text_lengths(dataset_factory,tmp_path):
+    data=dataset_factory('x,y\n12,ééé\n9,é\n')
+    spec=DatasetSpec(name='d',columns=[ColumnSpec(name='x',kind='integer',maximum=10),ColumnSpec(name='y',min_length=2,max_length=2)])
+    r=check(data,spec)
+    assert sum(f.failures for f in r.findings if f.code.startswith('value.') and f.code!='value.type')==3

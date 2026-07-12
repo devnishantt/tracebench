@@ -32,3 +32,8 @@ def test_enforce_maximum_numeric_and_unicode_text_lengths(dataset_factory,tmp_pa
     spec=DatasetSpec(name='d',columns=[ColumnSpec(name='x',kind='integer',maximum=10),ColumnSpec(name='y',min_length=2,max_length=2)])
     r=check(data,spec)
     assert sum(f.failures for f in r.findings if f.code.startswith('value.') and f.code!='value.type')==3
+
+def test_compare_categorical_allowlists_case_sensitively(dataset_factory,tmp_path):
+    data=dataset_factory('status\nactive\nACTIVE\n')
+    r=check(data,DatasetSpec(name='d',columns=[ColumnSpec(name='status',allowed=['active'])]))
+    assert next(f for f in r.findings if f.code=='value.allowed').sample_rows==[2]

@@ -42,3 +42,7 @@ def test_require_complete_re2_matches_rather_than_substring_matches(dataset_fact
     data=dataset_factory('code\nAB12\nxAB12x\n')
     r=check(data,DatasetSpec(name='d',columns=[ColumnSpec(name='code',pattern='[A-Z]{2}[0-9]{2}')]))
     assert next(f for f in r.findings if f.code=='value.pattern').sample_rows==[2]
+
+def test_reject_unsupported_backtracking_regex_features_as_contract_errors(dataset_factory,tmp_path):
+    data=dataset_factory('code\na\n')
+    with pytest.raises(ContractError): check(data,DatasetSpec(name='d',columns=[ColumnSpec(name='code',pattern='(?=a)a')]))

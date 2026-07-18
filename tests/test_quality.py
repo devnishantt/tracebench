@@ -57,3 +57,8 @@ def test_enforce_composite_primary_key_nullability_and_uniqueness(dataset_factor
     r=check(data,DatasetSpec(name='d',columns=[ColumnSpec(name='a'),ColumnSpec(name='b',nullable=True)],primary_key=['a','b']))
     assert next(f for f in r.findings if f.code=='key.unique').failures==2
     assert next(f for f in r.findings if f.code=='key.null').sample_rows==[3]
+
+def test_compare_integer_and_decimal_relation_operands_numerically(dataset_factory,tmp_path):
+    data=dataset_factory('low,high\n9,10.0\n11,10.0\n')
+    r=check(data,DatasetSpec(name='d',columns=[ColumnSpec(name='low',kind='integer'),ColumnSpec(name='high',kind='number')],relations=[Relation(left='low',op='le',right='high')]))
+    assert next(f for f in r.findings if f.code=='relation.le').sample_rows==[2]

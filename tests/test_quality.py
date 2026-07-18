@@ -46,3 +46,8 @@ def test_require_complete_re2_matches_rather_than_substring_matches(dataset_fact
 def test_reject_unsupported_backtracking_regex_features_as_contract_errors(dataset_factory,tmp_path):
     data=dataset_factory('code\na\n')
     with pytest.raises(ContractError): check(data,DatasetSpec(name='d',columns=[ColumnSpec(name='code',pattern='(?=a)a')]))
+
+def test_count_every_row_in_a_duplicate_group(dataset_factory,tmp_path):
+    data=dataset_factory('id\n1\n1\n2\n')
+    r=check(data,DatasetSpec(name='d',columns=[ColumnSpec(name='id',unique=True)]))
+    assert next(f for f in r.findings if f.code=='value.unique').sample_rows==[1,2]

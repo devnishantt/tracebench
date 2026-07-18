@@ -51,3 +51,9 @@ def test_count_every_row_in_a_duplicate_group(dataset_factory,tmp_path):
     data=dataset_factory('id\n1\n1\n2\n')
     r=check(data,DatasetSpec(name='d',columns=[ColumnSpec(name='id',unique=True)]))
     assert next(f for f in r.findings if f.code=='value.unique').sample_rows==[1,2]
+
+def test_enforce_composite_primary_key_nullability_and_uniqueness(dataset_factory,tmp_path):
+    data=dataset_factory('a,b\n1,x\n1,x\n2,\n')
+    r=check(data,DatasetSpec(name='d',columns=[ColumnSpec(name='a'),ColumnSpec(name='b',nullable=True)],primary_key=['a','b']))
+    assert next(f for f in r.findings if f.code=='key.unique').failures==2
+    assert next(f for f in r.findings if f.code=='key.null').sample_rows==[3]

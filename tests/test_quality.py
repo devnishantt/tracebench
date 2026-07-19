@@ -67,3 +67,8 @@ def test_compare_date_relations_as_real_calendar_dates(dataset_factory,tmp_path)
     data=dataset_factory('start,end\n2026-10-01,2026-10-02\n2026-10-03,2026-10-02\n')
     r=check(data,DatasetSpec(name='d',columns=[ColumnSpec(name='start',kind='date'),ColumnSpec(name='end',kind='date')],relations=[Relation(left='start',op='le',right='end')]))
     assert next(f for f in r.findings if f.code=='relation.le').sample_rows==[2]
+
+def test_allow_explicitly_optional_absent_columns(dataset_factory,tmp_path):
+    data=dataset_factory('x\n1\n')
+    r=check(data,DatasetSpec(name='d',columns=[ColumnSpec(name='x'),ColumnSpec(name='optional',required=False)]))
+    assert r.passed

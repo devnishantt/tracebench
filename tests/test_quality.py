@@ -62,3 +62,8 @@ def test_compare_integer_and_decimal_relation_operands_numerically(dataset_facto
     data=dataset_factory('low,high\n9,10.0\n11,10.0\n')
     r=check(data,DatasetSpec(name='d',columns=[ColumnSpec(name='low',kind='integer'),ColumnSpec(name='high',kind='number')],relations=[Relation(left='low',op='le',right='high')]))
     assert next(f for f in r.findings if f.code=='relation.le').sample_rows==[2]
+
+def test_compare_date_relations_as_real_calendar_dates(dataset_factory,tmp_path):
+    data=dataset_factory('start,end\n2026-10-01,2026-10-02\n2026-10-03,2026-10-02\n')
+    r=check(data,DatasetSpec(name='d',columns=[ColumnSpec(name='start',kind='date'),ColumnSpec(name='end',kind='date')],relations=[Relation(left='start',op='le',right='end')]))
+    assert next(f for f in r.findings if f.code=='relation.le').sample_rows==[2]

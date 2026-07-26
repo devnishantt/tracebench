@@ -72,3 +72,8 @@ def test_allow_explicitly_optional_absent_columns(dataset_factory,tmp_path):
     data=dataset_factory('x\n1\n')
     r=check(data,DatasetSpec(name='d',columns=[ColumnSpec(name='x'),ColumnSpec(name='optional',required=False)]))
     assert r.passed
+
+def test_preserve_warning_only_extra_columns_without_failing_the_report(dataset_factory,tmp_path):
+    data=dataset_factory('x,extra\n1,2\n')
+    r=check(data,DatasetSpec(name='d',columns=[ColumnSpec(name='x')],extra_columns='warn'))
+    assert r.passed and r.warnings==1 and r.errors==0

@@ -87,3 +87,7 @@ def test_disable_row_number_samples_when_the_sample_limit_is_zero(dataset_factor
     data=dataset_factory('x\nbad\n')
     r=check(data,DatasetSpec(name='d',columns=[ColumnSpec(name='x',kind='integer')],sample_limit=0))
     assert next(f for f in r.findings if f.code=='value.type').sample_rows==[]
+
+def test_exclude_generation_timestamps_from_quality_fingerprints(dataset_factory,tmp_path):
+    data=dataset_factory('x\n1\n');spec=DatasetSpec(name='d',columns=[ColumnSpec(name='x')])
+    assert check(data,spec).content_fingerprint == check(data,spec).content_fingerprint

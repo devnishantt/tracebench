@@ -82,3 +82,8 @@ def test_enforce_both_minimum_and_maximum_record_counts(dataset_factory,tmp_path
     data=dataset_factory('x\n1\n2\n')
     r=check(data,DatasetSpec(name='d',columns=[ColumnSpec(name='x')],max_rows=1))
     assert next(f for f in r.findings if f.code=='rows.maximum').failures==1
+
+def test_disable_row_number_samples_when_the_sample_limit_is_zero(dataset_factory,tmp_path):
+    data=dataset_factory('x\nbad\n')
+    r=check(data,DatasetSpec(name='d',columns=[ColumnSpec(name='x',kind='integer')],sample_limit=0))
+    assert next(f for f in r.findings if f.code=='value.type').sample_rows==[]

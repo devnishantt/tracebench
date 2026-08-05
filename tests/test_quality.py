@@ -91,3 +91,8 @@ def test_disable_row_number_samples_when_the_sample_limit_is_zero(dataset_factor
 def test_exclude_generation_timestamps_from_quality_fingerprints(dataset_factory,tmp_path):
     data=dataset_factory('x\n1\n');spec=DatasetSpec(name='d',columns=[ColumnSpec(name='x')])
     assert check(data,spec).content_fingerprint == check(data,spec).content_fingerprint
+
+def test_apply_relation_null_policy_independently_of_column_nullability(dataset_factory,tmp_path):
+    data=dataset_factory('a,b\n1,\n')
+    r=check(data,DatasetSpec(name='d',columns=[ColumnSpec(name='a',nullable=True),ColumnSpec(name='b',nullable=True)],relations=[Relation(left='a',op='eq',right='b',ignore_nulls=False)]))
+    assert next(f for f in r.findings if f.code=='relation.eq').sample_rows==[1]

@@ -17,3 +17,7 @@ def test_compute_population_moments_and_interpolated_quantiles(dataset_factory,t
     s=numeric_summary(['1','2','3','4'])
     assert s['mean']==2.5 and s['median']==2.5 and s['p25']==1.75
     assert s['stddev']==pytest.approx(1.118033988749895)
+
+def test_exclude_nulls_from_distinct_value_cardinality(dataset_factory,tmp_path):
+    p=profile(dataset_factory('x\na\na\n""\n'))
+    assert p.columns[0].distinct==1 and p.columns[0].null_fraction==pytest.approx(1/3)

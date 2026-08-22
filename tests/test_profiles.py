@@ -30,3 +30,7 @@ def test_omit_raw_categorical_labels_by_default(dataset_factory,tmp_path):
 def test_include_categorical_labels_only_after_an_explicit_opt_in(dataset_factory,tmp_path):
     p=profile(dataset_factory('x\npublic-example\n'),include_values=True)
     assert p.columns[0].categories[0]['label']=='public-example'
+
+def test_mark_distributions_incomplete_at_the_category_budget(dataset_factory,tmp_path):
+    p=profile(dataset_factory('x\na\nb\nc\n'),category_limit=2)
+    assert p.columns[0].categories_truncated and len(p.columns[0].categories)==2

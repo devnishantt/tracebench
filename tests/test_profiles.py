@@ -26,3 +26,7 @@ def test_omit_raw_categorical_labels_by_default(dataset_factory,tmp_path):
     p=profile(dataset_factory('x\nprivate-category\n'))
     assert 'label' not in p.columns[0].categories[0]
     assert 'private-category' not in report_json(p)
+
+def test_include_categorical_labels_only_after_an_explicit_opt_in(dataset_factory,tmp_path):
+    p=profile(dataset_factory('x\npublic-example\n'),include_values=True)
+    assert p.columns[0].categories[0]['label']=='public-example'

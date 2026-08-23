@@ -42,3 +42,8 @@ def test_avoid_inferring_numeric_kinds_from_only_a_majority_of_rows(dataset_fact
 def test_exclude_timestamps_from_profile_content_fingerprints(dataset_factory,tmp_path):
     data=dataset_factory('x\n1\n')
     assert profile(data).content_fingerprint == profile(data).content_fingerprint
+
+def test_draft_contracts_without_overfitting_observed_numeric_bounds(dataset_factory,tmp_path):
+    p=profile(dataset_factory('amount\n1\n2\n'))
+    draft=draft_contract(p)
+    assert draft.columns[0].kind=='integer' and draft.columns[0].minimum is None and draft.columns[0].maximum is None

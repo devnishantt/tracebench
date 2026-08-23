@@ -38,3 +38,7 @@ def test_mark_distributions_incomplete_at_the_category_budget(dataset_factory,tm
 def test_avoid_inferring_numeric_kinds_from_only_a_majority_of_rows(dataset_factory,tmp_path):
     p=profile(dataset_factory('x\n1\n2\nunknown\n'))
     assert p.columns[0].inferred_kind=='string' and p.columns[0].numeric is None
+
+def test_exclude_timestamps_from_profile_content_fingerprints(dataset_factory,tmp_path):
+    data=dataset_factory('x\n1\n')
+    assert profile(data).content_fingerprint == profile(data).content_fingerprint

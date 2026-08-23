@@ -34,3 +34,7 @@ def test_include_categorical_labels_only_after_an_explicit_opt_in(dataset_factor
 def test_mark_distributions_incomplete_at_the_category_budget(dataset_factory,tmp_path):
     p=profile(dataset_factory('x\na\nb\nc\n'),category_limit=2)
     assert p.columns[0].categories_truncated and len(p.columns[0].categories)==2
+
+def test_avoid_inferring_numeric_kinds_from_only_a_majority_of_rows(dataset_factory,tmp_path):
+    p=profile(dataset_factory('x\n1\n2\nunknown\n'))
+    assert p.columns[0].inferred_kind=='string' and p.columns[0].numeric is None

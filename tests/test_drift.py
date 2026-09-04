@@ -20,3 +20,7 @@ def test_flag_introduced_columns_as_schema_drift(dataset_factory,tmp_path):
 def test_flag_shifts_in_missing_value_fractions(dataset_factory,tmp_path):
     a=profile(dataset_factory('x\na\nb\n'));b=profile(dataset_factory('x\na\n""\n'))
     assert next(m for m in compare(a,b).metrics if m.metric=='nulls.fraction_delta').status=='warn'
+
+def test_measure_disjoint_categorical_distributions_at_full_distance(dataset_factory,tmp_path):
+    a=profile(dataset_factory('x\na\n')).columns[0];b=profile(dataset_factory('x\nb\n')).columns[0]
+    assert category_distance(a,b,0.2).value==1

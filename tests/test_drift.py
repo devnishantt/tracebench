@@ -24,3 +24,8 @@ def test_flag_shifts_in_missing_value_fractions(dataset_factory,tmp_path):
 def test_measure_disjoint_categorical_distributions_at_full_distance(dataset_factory,tmp_path):
     a=profile(dataset_factory('x\na\n')).columns[0];b=profile(dataset_factory('x\nb\n')).columns[0]
     assert category_distance(a,b,0.2).value==1
+
+def test_refuse_confident_comparison_of_truncated_distributions(dataset_factory,tmp_path):
+    p=profile(dataset_factory('x\na\nb\n'),category_limit=1)
+    r=compare(p,p)
+    assert r.drifted and any(m.status=='incomparable' for m in r.metrics)

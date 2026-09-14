@@ -41,3 +41,7 @@ def test_treat_zero_row_volume_baselines_explicitly(dataset_factory,tmp_path):
 def test_allow_an_explicit_nonblocking_incomparable_policy(dataset_factory,tmp_path):
     p=profile(dataset_factory('x\na\nb\n'),category_limit=1)
     assert not compare(p,p,DriftPolicy(fail_on_incomparable=False)).drifted
+
+def test_reject_mixed_tool_versions_for_numeric_methodology_compatibility(dataset_factory,tmp_path):
+    a=profile(dataset_factory('x\n1\n'));b=a.model_copy(deep=True);b.tool_version='9.0.0'
+    with pytest.raises(ArtifactError): compare(a,b)

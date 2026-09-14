@@ -10,3 +10,8 @@ from tracebench.cli_support import guard_outputs
 def test_publish_and_reload_a_fingerprint_verified_profile_artifact(dataset_factory,tmp_path):
     p=profile(dataset_factory('x\na\nb\n'));out=tmp_path/'profile.json'
     write_atomic(out,report_json(p));assert load_profile(out).content_fingerprint==p.content_fingerprint
+
+def test_refuse_silent_report_overwrites(dataset_factory,tmp_path):
+    out=tmp_path/'report.txt';out.write_text('original')
+    with pytest.raises(ArtifactError): write_atomic(out,'replacement')
+    assert out.read_text()=='original'

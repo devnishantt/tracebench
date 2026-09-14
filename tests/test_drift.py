@@ -37,3 +37,7 @@ def test_flag_a_changed_zero_variance_numeric_baseline_without_infinity(dataset_
 def test_treat_zero_row_volume_baselines_explicitly(dataset_factory,tmp_path):
     a=profile(dataset_factory('x\n'));b=profile(dataset_factory('x\na\n'))
     assert next(m for m in compare(a,b).metrics if m.metric=='volume.relative_change').status=='incomparable'
+
+def test_allow_an_explicit_nonblocking_incomparable_policy(dataset_factory,tmp_path):
+    p=profile(dataset_factory('x\na\nb\n'),category_limit=1)
+    assert not compare(p,p,DriftPolicy(fail_on_incomparable=False)).drifted

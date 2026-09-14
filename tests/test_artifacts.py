@@ -15,3 +15,8 @@ def test_refuse_silent_report_overwrites(dataset_factory,tmp_path):
     out=tmp_path/'report.txt';out.write_text('original')
     with pytest.raises(ArtifactError): write_atomic(out,'replacement')
     assert out.read_text()=='original'
+
+def test_atomically_replace_an_output_only_with_explicit_permission(dataset_factory,tmp_path):
+    out=tmp_path/'report.txt';write_atomic(out,'first');write_atomic(out,'second',overwrite=True)
+    assert out.read_text()=='second'
+    assert not list(tmp_path.glob('.tracebench-*'))

@@ -33,3 +33,7 @@ def test_refuse_confident_comparison_of_truncated_distributions(dataset_factory,
 def test_flag_a_changed_zero_variance_numeric_baseline_without_infinity(dataset_factory,tmp_path):
     a=profile(dataset_factory('x\n10\n10\n')).columns[0];b=profile(dataset_factory('x\n11\n11\n')).columns[0]
     m=mean_shift(a,b,2);assert m.status=='warn' and m.value is None
+
+def test_treat_zero_row_volume_baselines_explicitly(dataset_factory,tmp_path):
+    a=profile(dataset_factory('x\n'));b=profile(dataset_factory('x\na\n'))
+    assert next(m for m in compare(a,b).metrics if m.metric=='volume.relative_change').status=='incomparable'

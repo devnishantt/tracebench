@@ -20,3 +20,7 @@ def test_atomically_replace_an_output_only_with_explicit_permission(dataset_fact
     out=tmp_path/'report.txt';write_atomic(out,'first');write_atomic(out,'second',overwrite=True)
     assert out.read_text()=='second'
     assert not list(tmp_path.glob('.tracebench-*'))
+
+def test_reject_modified_json_profile_content(dataset_factory,tmp_path):
+    p=profile(dataset_factory('x\na\n'));data=json.loads(report_json(p));data['source']['rows']=99;out=tmp_path/'changed.json';out.write_text(json.dumps(data))
+    with pytest.raises(ArtifactError,match='fingerprint'): load_profile(out)

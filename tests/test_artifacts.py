@@ -29,3 +29,9 @@ def test_reject_symbolic_link_output_destinations(dataset_factory,tmp_path):
     target=tmp_path/'target';target.write_text('keep');link=tmp_path/'link';link.symlink_to(target)
     with pytest.raises(ArtifactError): write_atomic(link,'replace',overwrite=True)
     assert target.read_text()=='keep'
+
+def test_escape_html_payloads_in_dataset_column_names(dataset_factory,tmp_path):
+    p=profile(dataset_factory('id,<script>alert(1)</script>\n1,x\n'));page=render_html(p)
+    assert '<script>alert(1)</script>' not in page
+    assert '&lt;script&gt;' in page
+    assert 'default-src' in page

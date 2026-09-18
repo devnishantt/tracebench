@@ -24,3 +24,8 @@ def test_atomically_replace_an_output_only_with_explicit_permission(dataset_fact
 def test_reject_modified_json_profile_content(dataset_factory,tmp_path):
     p=profile(dataset_factory('x\na\n'));data=json.loads(report_json(p));data['source']['rows']=99;out=tmp_path/'changed.json';out.write_text(json.dumps(data))
     with pytest.raises(ArtifactError,match='fingerprint'): load_profile(out)
+
+def test_reject_symbolic_link_output_destinations(dataset_factory,tmp_path):
+    target=tmp_path/'target';target.write_text('keep');link=tmp_path/'link';link.symlink_to(target)
+    with pytest.raises(ArtifactError): write_atomic(link,'replace',overwrite=True)
+    assert target.read_text()=='keep'

@@ -35,3 +35,7 @@ def test_escape_html_payloads_in_dataset_column_names(dataset_factory,tmp_path):
     assert '<script>alert(1)</script>' not in page
     assert '&lt;script&gt;' in page
     assert 'default-src' in page
+
+def test_escape_markdown_links_table_pipes_and_newlines(dataset_factory,tmp_path):
+    value=escape_markdown('[click](javascript:bad)|new\nline')
+    assert '\[' in value and '\|' in value and '\n' not in value

@@ -12,7 +12,7 @@ def pattern_check(dataset: Dataset, column: ColumnSpec, sample_limit: int) -> li
     name = identifier(column.name)
     try:
         # RE2 evaluates patterns without Python-style catastrophic backtracking.
-        dataset.connection.execute('SELECT regexp_full_match('', ?)', [column.pattern])
+        dataset.connection.execute('SELECT regexp_full_match(?, ?)', ['', column.pattern])
         bad = dataset.connection.execute(f'SELECT "__tb_row" FROM data WHERE {name} IS NOT NULL AND NOT regexp_full_match({name}, ?) ORDER BY "__tb_row"', [column.pattern]).fetchall()
         count = dataset.connection.execute(f'SELECT COUNT({name}) FROM data').fetchone()[0]
     except duckdb.Error as exc:

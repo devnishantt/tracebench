@@ -11,6 +11,7 @@ from .dataset import Dataset
 from .fingerprint import canonical_digest
 from .models import QualityReport
 
+
 def check(dataset: Dataset, spec: DatasetSpec) -> QualityReport:
     findings = [*structure_checks(dataset, spec), *row_count_checks(dataset, spec)]
     for column in spec.columns:
@@ -26,8 +27,18 @@ def check(dataset: Dataset, spec: DatasetSpec) -> QualityReport:
             findings.append(unique_check(values, column.name, column.severity, spec.sample_limit))
     findings.extend(primary_key_checks(dataset, spec))
     findings.extend(relation_checks(dataset, spec))
-    errors = sum(f.failures > 0 and f.severity == 'error' for f in findings)
-    warnings = sum(f.failures > 0 and f.severity == 'warning' for f in findings)
-    report = QualityReport(source=dataset.source, contract_name=spec.name, contract_fingerprint=spec.fingerprint, findings=findings, passed=errors == 0, errors=errors, warnings=warnings)
-    report.content_fingerprint = canonical_digest(report.model_dump(mode='json', exclude={'generated_at', 'content_fingerprint'}))
+    errors = sum(f.failures > 0 and f.severity == "error" for f in findings)
+    warnings = sum(f.failures > 0 and f.severity == "warning" for f in findings)
+    report = QualityReport(
+        source=dataset.source,
+        contract_name=spec.name,
+        contract_fingerprint=spec.fingerprint,
+        findings=findings,
+        passed=errors == 0,
+        errors=errors,
+        warnings=warnings,
+    )
+    report.content_fingerprint = canonical_digest(
+        report.model_dump(mode="json", exclude={"generated_at", "content_fingerprint"})
+    )
     return report

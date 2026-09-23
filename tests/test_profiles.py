@@ -1,49 +1,66 @@
 import pytest
-from tracebench.profile import profile
-from tracebench.statistics import numeric_summary
+
 from tracebench.artifacts import report_json
 from tracebench.draft import draft_contract
+from tracebench.profile import profile
+from tracebench.statistics import numeric_summary
 
-def test_profile_header_only_datasets_without_inventing_numeric_summaries(dataset_factory,tmp_path):
-    p=profile(dataset_factory('x\n'))
-    assert p.source.rows==0 and p.columns[0].numeric is None
-    assert p.columns[0].inferred_kind=='unknown'
 
-def test_retain_all_null_columns_as_unknown_semantic_kinds(dataset_factory,tmp_path):
-    p=profile(dataset_factory('x\n""\n'))
-    assert p.columns[0].nulls==1 and p.columns[0].inferred_kind=='unknown'
+def test_profile_header_only_datasets_without_inventing_numeric_summaries(
+    dataset_factory, tmp_path
+):
+    p = profile(dataset_factory("x\n"))
+    assert p.source.rows == 0 and p.columns[0].numeric is None
+    assert p.columns[0].inferred_kind == "unknown"
 
-def test_compute_population_moments_and_interpolated_quantiles(dataset_factory,tmp_path):
-    s=numeric_summary(['1','2','3','4'])
-    assert s['mean']==2.5 and s['median']==2.5 and s['p25']==1.75
-    assert s['stddev']==pytest.approx(1.118033988749895)
 
-def test_exclude_nulls_from_distinct_value_cardinality(dataset_factory,tmp_path):
-    p=profile(dataset_factory('x\na\na\n""\n'))
-    assert p.columns[0].distinct==1 and p.columns[0].null_fraction==pytest.approx(1/3)
+def test_retain_all_null_columns_as_unknown_semantic_kinds(dataset_factory, tmp_path):
+    p = profile(dataset_factory('x\n""\n'))
+    assert p.columns[0].nulls == 1 and p.columns[0].inferred_kind == "unknown"
 
-def test_omit_raw_categorical_labels_by_default(dataset_factory,tmp_path):
-    p=profile(dataset_factory('x\nprivate-category\n'))
-    assert 'label' not in p.columns[0].categories[0]
-    assert 'private-category' not in report_json(p)
 
-def test_include_categorical_labels_only_after_an_explicit_opt_in(dataset_factory,tmp_path):
-    p=profile(dataset_factory('x\npublic-example\n'),include_values=True)
-    assert p.columns[0].categories[0]['label']=='public-example'
+def test_compute_population_moments_and_interpolated_quantiles(dataset_factory, tmp_path):
+    s = numeric_summary(["1", "2", "3", "4"])
+    assert s["mean"] == 2.5 and s["median"] == 2.5 and s["p25"] == 1.75
+    assert s["stddev"] == pytest.approx(1.118033988749895)
 
-def test_mark_distributions_incomplete_at_the_category_budget(dataset_factory,tmp_path):
-    p=profile(dataset_factory('x\na\nb\nc\n'),category_limit=2)
-    assert p.columns[0].categories_truncated and len(p.columns[0].categories)==2
 
-def test_avoid_inferring_numeric_kinds_from_only_a_majority_of_rows(dataset_factory,tmp_path):
-    p=profile(dataset_factory('x\n1\n2\nunknown\n'))
-    assert p.columns[0].inferred_kind=='string' and p.columns[0].numeric is None
+def test_exclude_nulls_from_distinct_value_cardinality(dataset_factory, tmp_path):
+    p = profile(dataset_factory('x\na\na\n""\n'))
+    assert p.columns[0].distinct == 1 and p.columns[0].null_fraction == pytest.approx(1 / 3)
 
-def test_exclude_timestamps_from_profile_content_fingerprints(dataset_factory,tmp_path):
-    data=dataset_factory('x\n1\n')
+
+def test_omit_raw_categorical_labels_by_default(dataset_factory, tmp_path):
+    p = profile(dataset_factory("x\nprivate-category\n"))
+    assert "label" not in p.columns[0].categories[0]
+    assert "private-category" not in report_json(p)
+
+
+def test_include_categorical_labels_only_after_an_explicit_opt_in(dataset_factory, tmp_path):
+    p = profile(dataset_factory("x\npublic-example\n"), include_values=True)
+    assert p.columns[0].categories[0]["label"] == "public-example"
+
+
+def test_mark_distributions_incomplete_at_the_category_budget(dataset_factory, tmp_path):
+    p = profile(dataset_factory("x\na\nb\nc\n"), category_limit=2)
+    assert p.columns[0].categories_truncated and len(p.columns[0].categories) == 2
+
+
+def test_avoid_inferring_numeric_kinds_from_only_a_majority_of_rows(dataset_factory, tmp_path):
+    p = profile(dataset_factory("x\n1\n2\nunknown\n"))
+    assert p.columns[0].inferred_kind == "string" and p.columns[0].numeric is None
+
+
+def test_exclude_timestamps_from_profile_content_fingerprints(dataset_factory, tmp_path):
+    data = dataset_factory("x\n1\n")
     assert profile(data).content_fingerprint == profile(data).content_fingerprint
 
-def test_draft_contracts_without_overfitting_observed_numeric_bounds(dataset_factory,tmp_path):
-    p=profile(dataset_factory('amount\n1\n2\n'))
-    draft=draft_contract(p)
-    assert draft.columns[0].kind=='integer' and draft.columns[0].minimum is None and draft.columns[0].maximum is None
+
+def test_draft_contracts_without_overfitting_observed_numeric_bounds(dataset_factory, tmp_path):
+    p = profile(dataset_factory("amount\n1\n2\n"))
+    draft = draft_contract(p)
+    assert (
+        draft.columns[0].kind == "integer"
+        and draft.columns[0].minimum is None
+        and draft.columns[0].maximum is None
+    )

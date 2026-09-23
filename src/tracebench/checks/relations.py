@@ -1,11 +1,22 @@
 import operator
+from collections.abc import Callable
+from typing import Any
+
 from ..contracts import DatasetSpec
 from ..dataset import Dataset
 from ..models import Finding
 from ..values import parse_value
 from .common import finding
 
-OPERATORS = {'eq': operator.eq, 'ne': operator.ne, 'lt': operator.lt, 'le': operator.le, 'gt': operator.gt, 'ge': operator.ge}
+OPERATORS: dict[str, Callable[[Any, Any], bool]] = {
+    "eq": operator.eq,
+    "ne": operator.ne,
+    "lt": operator.lt,
+    "le": operator.le,
+    "gt": operator.gt,
+    "ge": operator.ge,
+}
+
 
 def relation_checks(dataset: Dataset, spec: DatasetSpec) -> list[Finding]:
     kinds = {column.name: column.kind for column in spec.columns}
@@ -29,5 +40,15 @@ def relation_checks(dataset: Dataset, spec: DatasetSpec) -> list[Finding]:
             checked += 1
             if not OPERATORS[rule.op](x, y):
                 bad.append(row)
-        result.append(finding('relation.' + rule.op, f'{rule.left} → {rule.right}', bad, checked, 'Declared cross-column comparison must hold', rule.severity, spec.sample_limit))
+        result.append(
+            finding(
+                "relation." + rule.op,
+                f"{rule.left} → {rule.right}",
+                bad,
+                checked,
+                "Declared cross-column comparison must hold",
+                rule.severity,
+                spec.sample_limit,
+            )
+        )
     return result

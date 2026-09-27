@@ -11,6 +11,10 @@ def compare(
     policy = policy or DriftPolicy()
     if baseline.tool_version != candidate.tool_version:
         raise ArtifactError("Profile tool versions differ; regenerate both with the same version")
+    if set(baseline.source.null_tokens) != set(candidate.source.null_tokens):
+        raise ArtifactError(
+            "Profile null-normalization policies differ; regenerate with one policy"
+        )
     metrics = []
     old, new = {c.name: c for c in baseline.columns}, {c.name: c for c in candidate.columns}
     for name in sorted(old.keys() - new.keys()):

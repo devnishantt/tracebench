@@ -48,6 +48,7 @@ def read_jsonl(path: Path, limits: Limits) -> tuple[list[str], list[list[str | N
                 data = json.loads(
                     line,
                     parse_float=Decimal,
+                    parse_int=Decimal,
                     parse_constant=reject_constant,
                     object_pairs_hook=unique_object,
                 )
@@ -62,5 +63,5 @@ def read_jsonl(path: Path, limits: Limits) -> tuple[list[str], list[list[str | N
         if validated != names:
             raise InputError("JSONL keys cannot contain surrounding whitespace")
         return names, [[record.get(name) for name in names] for record in records]
-    except (json.JSONDecodeError, UnicodeError, OSError) as exc:
+    except (ValueError, RecursionError, UnicodeError, OSError) as exc:
         raise InputError(f"Cannot read JSONL: {exc}") from exc

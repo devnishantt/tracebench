@@ -97,6 +97,7 @@ def load_dataset(
                 rows=len(rows),
                 columns=names,
                 format=cast(Literal["csv", "jsonl", "parquet"], kind),
+                null_tokens=sorted(tokens),
             )
             return Dataset(source, connection)
         except Exception:

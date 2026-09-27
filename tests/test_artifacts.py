@@ -63,7 +63,7 @@ def test_escape_html_payloads_in_dataset_column_names(dataset_factory, tmp_path)
 
 def test_escape_markdown_links_table_pipes_and_newlines(dataset_factory, tmp_path):
     value = escape_markdown("[click](javascript:bad)|new\nline")
-    assert "\[" in value and "\|" in value and "\n" not in value
+    assert r"\[" in value and r"\|" in value and "\n" not in value
 
 
 def test_protect_source_paths_and_conflicting_report_destinations(dataset_factory, tmp_path):

@@ -17,6 +17,7 @@ class Source(Model):
     rows: int = Field(ge=0)
     columns: list[str]
     format: Literal["csv", "jsonl", "parquet"]
+    null_tokens: list[str] = Field(default_factory=lambda: ["", "NULL", "null"])
 
 
 class Finding(Model):

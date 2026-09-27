@@ -74,3 +74,10 @@ def test_reject_mixed_tool_versions_for_numeric_methodology_compatibility(
     b.tool_version = "9.0.0"
     with pytest.raises(ArtifactError):
         compare(a, b)
+
+
+def test_reject_incompatible_null_normalization_policies(dataset_factory, tmp_path):
+    a = profile(dataset_factory("x\nNA\n", null_tokens=["NA"]))
+    b = profile(dataset_factory("x\nNA\n", null_tokens=[]))
+    with pytest.raises(ArtifactError, match="normalization"):
+        compare(a, b)

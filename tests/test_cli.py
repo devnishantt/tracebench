@@ -42,3 +42,13 @@ def test_compare_cli_detects_a_numeric_shift(tmp_path):
     result=runner.invoke(app,['compare',str(tmp_path/'baseline.json'),str(tmp_path/'candidate.json'),'--json',str(output)])
     assert result.exit_code==1, result.output
     assert json.loads(output.read_text())['drifted']
+
+
+def test_infer_drafts_rules_but_protects_source(tmp_path):
+    source=tmp_path/'data.csv';source.write_text('id\n1\n2\n')
+    output=tmp_path/'draft.json'
+    assert runner.invoke(app,['infer',str(source),'-o',str(output)]).exit_code==0
+    assert json.loads(output.read_text())['columns'][0]['kind']=='integer'
+    before=source.read_bytes()
+    assert runner.invoke(app,['infer',str(source),'-o',str(source),'--overwrite']).exit_code==2
+    assert source.read_bytes()==before

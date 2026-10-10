@@ -31,3 +31,14 @@ def test_warning_exit_policy_is_explicit(tmp_path):
     contract=tmp_path/'contract.json';contract.write_text(json.dumps({'name':'IDs','columns':[{'name':'id'}],'extra_columns':'warn'}))
     assert runner.invoke(app,['check',str(source),'-c',str(contract)]).exit_code==0
     assert runner.invoke(app,['check',str(source),'-c',str(contract),'--fail-on-warning']).exit_code==1
+
+
+def test_compare_cli_detects_a_numeric_shift(tmp_path):
+    for name,values in [('baseline','1\n2'),('candidate','100\n101')]:
+        source=tmp_path/(name+'.csv');source.write_text('value\n'+values+'\n')
+        result=runner.invoke(app,['profile',str(source),'--json',str(tmp_path/(name+'.json'))])
+        assert result.exit_code==0, result.output
+    output=tmp_path/'drift.json'
+    result=runner.invoke(app,['compare',str(tmp_path/'baseline.json'),str(tmp_path/'candidate.json'),'--json',str(output)])
+    assert result.exit_code==1, result.output
+    assert json.loads(output.read_text())['drifted']

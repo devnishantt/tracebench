@@ -24,3 +24,10 @@ def test_check_fails_with_usable_json_artifact(tmp_path):
     report=json.loads(output.read_text())
     assert report['errors']==1 and not report['passed']
     assert 'not-an-integer' not in output.read_text()
+
+
+def test_warning_exit_policy_is_explicit(tmp_path):
+    source=tmp_path/'data.csv';source.write_text('id,extra\n1,x\n')
+    contract=tmp_path/'contract.json';contract.write_text(json.dumps({'name':'IDs','columns':[{'name':'id'}],'extra_columns':'warn'}))
+    assert runner.invoke(app,['check',str(source),'-c',str(contract)]).exit_code==0
+    assert runner.invoke(app,['check',str(source),'-c',str(contract),'--fail-on-warning']).exit_code==1

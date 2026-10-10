@@ -13,3 +13,14 @@ def test_profile_json_stdout_is_machine_readable(tmp_path):
     assert payload['source']['rows']==2
     assert 'Profiled' not in result.stdout
     assert 'Profiled' in result.stderr
+
+
+def test_check_fails_with_usable_json_artifact(tmp_path):
+    source=tmp_path/'data.csv';source.write_text('id\nnot-an-integer\n')
+    contract=tmp_path/'contract.json';contract.write_text(json.dumps({'name':'IDs','columns':[{'name':'id','kind':'integer'}]}))
+    output=tmp_path/'quality.json'
+    result=runner.invoke(app,['check',str(source),'-c',str(contract),'--json',str(output)])
+    assert result.exit_code==1, result.output
+    report=json.loads(output.read_text())
+    assert report['errors']==1 and not report['passed']
+    assert 'not-an-integer' not in output.read_text()

@@ -52,3 +52,11 @@ def test_infer_drafts_rules_but_protects_source(tmp_path):
     before=source.read_bytes()
     assert runner.invoke(app,['infer',str(source),'-o',str(source),'--overwrite']).exit_code==2
     assert source.read_bytes()==before
+
+
+def test_invalid_source_is_an_actionable_cli_failure(tmp_path):
+    source=tmp_path/'data.csv';source.write_text('id,value\n1,2,3\n')
+    result=runner.invoke(app,['profile',str(source)])
+    assert result.exit_code==2
+    assert 'column count' in result.output
+    assert 'Traceback' not in result.output

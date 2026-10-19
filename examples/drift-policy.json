@@ -1,0 +1,7 @@
+{
+  "null_fraction_delta": 0.1,
+  "category_distance": 0.2,
+  "mean_shift": 2.0,
+  "row_count_delta": 0.25,
+  "fail_on_incomparable": true
+}

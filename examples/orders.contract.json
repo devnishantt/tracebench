@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "name": "Illustrative order feed",
+  "min_rows": 1,
+  "max_rows": 100000,
+  "primary_key": [
+    "order_id"
+  ],
+  "columns": [
+    {
+      "name": "order_id",
+      "pattern": "ORD-[0-9]{3}",
+      "unique": true
+    },
+    {
+      "name": "amount",
+      "kind": "number",
+      "minimum": "0",
+      "maximum": "10000"
+    },
+    {
+      "name": "region",
+      "allowed": [
+        "north",
+        "south",
+        "east",
+        "west"
+      ]
+    },
+    {
+      "name": "status",
+      "allowed": [
+        "paid",
+        "pending"
+      ]
+    },
+    {
+      "name": "opened",
+      "kind": "date"
+    },
+    {
+      "name": "closed",
+      "kind": "date"
+    },
+    {
+      "name": "active",
+      "kind": "boolean"
+    }
+  ],
+  "relations": [
+    {
+      "left": "opened",
+      "op": "le",
+      "right": "closed"
+    }
+  ]
+}

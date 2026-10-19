@@ -1,0 +1,7 @@
+order_id,amount,region,status,opened,closed,active
+ORD-007,300.00,east,review,2026-10-01,2026-10-03,true
+ORD-008,400.00,east,review,2026-10-02,2026-10-05,true
+ORD-009,-3.00,,paid,2026-10-04,2026-10-03,true
+ORD-010,500.00,east,paid,2026-10-04,2026-10-06,false
+ORD-011,600.00,east,pending,2026-02-30,2026-10-08,true
+ORD-012,700.00,,review,2026-10-06,2026-10-07,true

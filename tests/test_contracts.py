@@ -80,3 +80,8 @@ def test_wrap_malformed_contract_files_as_actionable_errors(dataset_factory, tmp
     path.write_text("{bad")
     with pytest.raises(ContractError):
         load_contract(path)
+
+
+def test_primary_keys_cannot_be_optional_columns():
+    with pytest.raises(ValidationError, match="must be required"):
+        DatasetSpec(name="IDs", columns=[ColumnSpec(name="id", required=False)], primary_key=["id"])

@@ -1,5 +1,6 @@
 import json
 import os
+import re
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 
@@ -74,9 +75,10 @@ def load_profile(path: Path) -> ProfileReport:
             ):
                 raise ArtifactError("Profile missing-value fraction is inconsistent")
             if any(
-                not isinstance(item.get("count"), int)
+                type(item.get("count")) is not int
                 or item["count"] < 1
                 or not isinstance(item.get("key"), str)
+                or re.fullmatch(r"[a-f0-9]{64}", item["key"]) is None
                 for item in column.categories
             ):
                 raise ArtifactError("Profile category counts are invalid")
@@ -86,6 +88,10 @@ def load_profile(path: Path) -> ProfileReport:
                 or (not column.categories_truncated and total != present)
             ):
                 raise ArtifactError("Profile category distribution is inconsistent")
+            if column.numeric is not None:
+                stddev = column.numeric.get("stddev")
+                if stddev is not None and stddev < 0:
+                    raise ArtifactError("Numeric standard deviation cannot be negative")
         return report
-    except (OSError, UnicodeError, ValidationError, TypeError, KeyError) as exc:
+    except (OSError, UnicodeError, ValidationError, ValueError, TypeError, KeyError) as exc:
         raise ArtifactError(f"Cannot load profile: {type(exc).__name__}") from exc

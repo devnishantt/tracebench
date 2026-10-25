@@ -8,11 +8,14 @@ from .checks.types import type_check
 from .checks.uniqueness import primary_key_checks, unique_check
 from .contracts import DatasetSpec
 from .dataset import Dataset
+from .errors import ContractError
 from .fingerprint import canonical_digest
 from .models import QualityReport
 
 
 def check(dataset: Dataset, spec: DatasetSpec) -> QualityReport:
+    if set(dataset.source.null_tokens) != set(spec.null_tokens):
+        raise ContractError("Loaded dataset null policy differs from the contract")
     findings = [*structure_checks(dataset, spec), *row_count_checks(dataset, spec)]
     for column in spec.columns:
         if column.name not in dataset.source.columns:

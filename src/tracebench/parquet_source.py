@@ -8,6 +8,8 @@ from .limits import Limits, headers
 
 
 def read_parquet(path: Path, limits: Limits) -> tuple[list[str], list[list[str | None]]]:
+    if any(character in str(path) for character in "*?[]"):
+        raise InputError("Parquet filenames cannot contain glob metacharacters")
     connection = duckdb.connect(
         config={
             "threads": 1,

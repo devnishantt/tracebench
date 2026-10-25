@@ -61,6 +61,10 @@ def emit(
     markdown_out: Path | None,
     overwrite: bool,
 ) -> None:
+    if (html_out is not None and str(html_out) == "-") or (
+        markdown_out is not None and str(markdown_out) == "-"
+    ):
+        raise ArtifactError("Only --json supports stdout via a dash")
     if json_out is not None:
         if str(json_out) == "-":
             typer.echo(report_json(report), nl=False)

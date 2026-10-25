@@ -42,6 +42,8 @@ class DatasetSpec(BaseModel):
             k not in names for k in self.primary_key
         ):
             raise ValueError("primary_key must reference distinct declared columns")
+        if any(not column.required for column in self.columns if column.name in self.primary_key):
+            raise ValueError("Primary-key columns must be required")
         for rule in self.relations:
             if rule.left not in names or rule.right not in names:
                 raise ValueError("Relations must reference declared columns")

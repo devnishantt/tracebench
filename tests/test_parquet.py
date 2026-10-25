@@ -49,3 +49,10 @@ def test_parquet_header_only_snapshots_have_zero_rows(tmp_path):
     with load_dataset(path) as data:
         assert data.source.rows == 0
         assert profile(data).columns[0].inferred_kind == "unknown"
+
+
+def test_parquet_literal_paths_cannot_expand_into_globs(tmp_path):
+    path = tmp_path / "part[01].parquet"
+    path.write_bytes(b"not read because the filename is rejected first")
+    with pytest.raises(InputError, match="glob"):
+        load_dataset(path)

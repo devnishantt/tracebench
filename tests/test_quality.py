@@ -179,3 +179,9 @@ def test_apply_relation_null_policy_independently_of_column_nullability(dataset_
         ),
     )
     assert next(f for f in r.findings if f.code == "relation.eq").sample_rows == [1]
+
+
+def test_library_quality_checks_reject_mismatched_null_policies(dataset_factory):
+    data = dataset_factory("x\nNA\n", null_tokens=["NA"])
+    with pytest.raises(ContractError, match="null policy"):
+        check(data, DatasetSpec(name="d", columns=[ColumnSpec(name="x")]))

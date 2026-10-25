@@ -90,3 +90,12 @@ def test_invalid_source_is_an_actionable_cli_failure(tmp_path):
     assert result.exit_code == 2
     assert "column count" in result.output
     assert "Traceback" not in result.output
+
+
+def test_schema_command_exports_contracts_reports_and_policies():
+    for kind in ["contract", "profile", "quality", "drift", "policy"]:
+        result = runner.invoke(app, ["schema", "--kind", kind])
+        assert result.exit_code == 0, result.output
+        schema = json.loads(result.stdout)
+        assert schema["type"] == "object"
+        assert schema["additionalProperties"] is False

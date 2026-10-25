@@ -1,8 +1,9 @@
 import json
 from pathlib import Path
-from typing import Annotated
+from typing import Annotated, Literal
 
 import typer
+from pydantic import BaseModel
 
 from . import __version__
 from .artifacts import load_profile, write_atomic
@@ -14,6 +15,7 @@ from .draft import draft_contract
 from .drift_policy import DriftPolicy
 from .errors import ContractError
 from .limits import Limits
+from .models import DriftReport, ProfileReport, QualityReport
 from .profile import profile as make_profile
 from .quality import check as run_checks
 
@@ -133,10 +135,19 @@ def infer_command(
 @app.command("schema")
 @guarded
 def schema_command(
-    output: Annotated[Path | None, typer.Option("--output", "-o")] = None, overwrite: bool = False
+    output: Annotated[Path | None, typer.Option("--output", "-o")] = None,
+    overwrite: bool = False,
+    kind: Literal["contract", "profile", "quality", "drift", "policy"] = "contract",
 ) -> None:
-    """Export the machine-readable JSON Schema for dataset contracts."""
-    text = json.dumps(DatasetSpec.model_json_schema(), indent=2) + "\n"
+    """Export a machine-readable contract, report, or drift-policy JSON Schema."""
+    models: dict[str, type[BaseModel]] = {
+        "contract": DatasetSpec,
+        "profile": ProfileReport,
+        "quality": QualityReport,
+        "drift": DriftReport,
+        "policy": DriftPolicy,
+    }
+    text = json.dumps(models[kind].model_json_schema(), indent=2) + "\n"
     if output is None:
         typer.echo(text, nl=False)
     else:

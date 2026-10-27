@@ -99,3 +99,20 @@ def test_schema_command_exports_contracts_reports_and_policies():
         schema = json.loads(result.stdout)
         assert schema["type"] == "object"
         assert schema["additionalProperties"] is False
+
+
+def test_terminal_error_text_neutralizes_control_sequences():
+    from tracebench.cli_support import safe_text
+
+    text = safe_text("\x1b[31munsafe\nnext")
+    assert "\x1b" not in text and "\n" not in text
+    assert r"\x1b" in text and r"\x0a" in text
+
+
+def test_only_json_reports_support_stdout_dash(tmp_path):
+    source = tmp_path / "data.csv"
+    source.write_text("id\n1\n")
+    result = runner.invoke(app, ["profile", str(source), "--html", "-"])
+    assert result.exit_code == 2
+    assert result.stdout == ""
+    assert "Only --json" in result.stderr

@@ -73,3 +73,31 @@ def test_protect_source_paths_and_conflicting_report_destinations(dataset_factor
         guard_outputs([source], [source], True)
     with pytest.raises(ArtifactError):
         guard_outputs([], [tmp_path / "a", tmp_path / "a"], True)
+
+
+def test_reject_forged_negative_deviation_even_with_a_new_content_hash(dataset_factory, tmp_path):
+    from tracebench.fingerprint import canonical_digest
+
+    report = profile(dataset_factory("amount\n1\n2\n"))
+    report.columns[0].numeric["stddev"] = -1.0
+    report.content_fingerprint = canonical_digest(
+        report.model_dump(mode="json", exclude={"generated_at", "content_fingerprint"})
+    )
+    path = tmp_path / "forged-numeric.json"
+    path.write_text(report_json(report))
+    with pytest.raises(ArtifactError, match="negative"):
+        load_profile(path)
+
+
+def test_reject_invalid_category_keys_even_after_rehashing(dataset_factory, tmp_path):
+    from tracebench.fingerprint import canonical_digest
+
+    report = profile(dataset_factory("region\nnorth\n"))
+    report.columns[0].categories[0]["key"] = "not-a-digest"
+    report.content_fingerprint = canonical_digest(
+        report.model_dump(mode="json", exclude={"generated_at", "content_fingerprint"})
+    )
+    path = tmp_path / "forged-category.json"
+    path.write_text(report_json(report))
+    with pytest.raises(ArtifactError, match="category"):
+        load_profile(path)

@@ -211,4 +211,4 @@ Not implemented: hosted dashboards, remote object stores, databases as data sour
 
 ## History provenance
 
-The **149 implementation and regression-test commits** use assigned historical timestamps within the reserved **January–October 29, 2026 (UTC)** portfolio calendar. Tracebench's reserved slots begin January 2 and end October 27. These timestamps are organizational metadata, not actual development dates. Each commit changes source, configuration, tests, examples, or documentation. The shared reservation leaves room for Ledgerline and Contractkit without exceeding eight combined commits on an active day.
+The **149 implementation and regression-test commits** use assigned historical timestamps within the reserved **January–October 29, 2026 (UTC)** portfolio calendar. Tracebench's reserved slots begin January 2 and end October 27. These timestamps are organizational metadata, not actual development dates. Each commit changes source, configuration, tests, examples, or documentation. The shared reservation leaves room for Ledgerline and Pactrail without exceeding eight combined commits on an active day.

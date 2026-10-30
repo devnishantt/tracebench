@@ -1,5 +1,7 @@
 # Tracebench
 
+[![CI](https://github.com/devnishantt/tracebench/actions/workflows/ci.yml/badge.svg)](https://github.com/devnishantt/tracebench/actions/workflows/ci.yml)
+
 Local-first dataset contracts, profiling, and drift comparisons—with reproducible evidence instead of a reassuring green badge alone.
 
 **Python · Typer · Pydantic · DuckDB · Jinja2 · pytest**
@@ -18,7 +20,7 @@ Tracebench is a CLI and Python library, not a hosted application. It reads bound
 - Schema, volume, null-fraction, categorical total-variation, and baseline-normalized mean-shift comparisons.
 - Explicit incomparable outcomes for truncated distributions, empty populations, or unsupported comparisons. No silent stability claims.
 - Fingerprinted artifacts, atomic per-file output, source-path protection, versioned JSON Schemas, offline HTML, and escaped Markdown.
-- Installed CLI and `python -m tracebench` entry points, typed-package metadata, synthetic examples, regression coverage, and an inactive CI template.
+- Installed CLI and `python -m tracebench` entry points, typed-package metadata, synthetic examples, regression coverage, and GitHub Actions CI.
 
 ## Repository and status
 
@@ -195,7 +197,7 @@ python -m pip check
 
 Locally verified: semantic/ingestion/contract/profile/drift/artifact/CLI tests, strict configured static checks, wheel and source distribution builds, clean wheel installation, actual CSV/JSONL/Parquet workflows, and expected success/failure exit codes. Offline HTML was checked in Chromium at desktop and mobile widths with no page errors or external requests. Test counts and final coverage are recorded by the verification run rather than inferred from commit count.
 
-The inactive CI template is at `ci/github-actions.yml`. This connection does not have permission to write active GitHub workflow files. To enable checks from an account with workflow permission, copy the template into `.github/workflows/ci.yml` and commit that change. It targets Python 3.11 and 3.13; only local Python 3.13 execution has been verified here. No remote GitHub Actions run or PyPI release is claimed.
+GitHub Actions runs [`.github/workflows/ci.yml`](.github/workflows/ci.yml) on pushes to `main`, pull requests, and manual dispatch. On Python 3.11 and 3.13 it installs from `requirements.lock`, runs ruff lint and format checks, mypy, pytest with coverage, builds the wheel and source archive, and runs the example contract check. No PyPI release is claimed.
 
 ## Not implemented / recommended next steps
 
